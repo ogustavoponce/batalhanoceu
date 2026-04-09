@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Central Hesedita - A ponte oficial para o Instituto Hesed e Exército de São Miguel.">
+    <title>Grupo Batalha no Céu | Central Hesedita</title>
+    
+    <!-- Tipografia Institucional -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- ARQUITETURA CSS ROBUSTA E VARIÁVEIS --- */
+        :root {
+            --cor-base-escura: #051024;   /* Azul profundo, base da identidade */
+            --cor-primaria: #0A1C3A;      /* Azul Institucional */
+            --cor-dourado-nobre: #CBA052; /* Dourado Sagrado */
+            --cor-dourado-hover: #b3883b;
+            --cor-texto-principal: #333333;
+            --cor-texto-secundario: #666666;
+            --cor-texto-claro: #FFFFFF;
+            --cor-fundo-claro: #F4F6F9;
+            --cor-fundo-secao: #FFFFFF;
+            
+            --espacamento-m: 2rem;
+            --espacamento-g: 4rem;
+            
+            --sombra-suave: 0 4px 6px rgba(0,0,0,0.05);
+            --sombra-profunda: 0 10px 25px rgba(0,0,0,0.15);
+            --transicao-padrao: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* --- RESET E BASE --- */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-texto-principal);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--cor-primaria);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- SISTEMA DE LAYOUT --- */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--espacamento-m);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: var(--transicao-padrao);
+            border: none;
+            text-align: center;
+        }
+
+        .btn-dourado {
+            background-color: var(--cor-dourado-nobre);
+            color: var(--cor-base-escura);
+        }
+
+        .btn-dourado:hover {
+            background-color: var(--cor-dourado-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-profunda);
+        }
+
+        .btn-contorno {
+            background-color: transparent;
+            color: var(--cor-dourado-nobre);
+            border: 2px solid var(--cor-dourado-nobre);
+        }
+
+        .btn-contorno:hover {
+            background-color: var(--cor-dourado-nobre);
+            color: var(--cor-base-escura);
+        }
+
+        /* --- CABEÇALHO (HEADER) --- */
+        .header-principal {
+            background-color: var(--cor-base-escura);
+            border-bottom: 3px solid var(--cor-dourado-nobre);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--sombra-profunda);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 90px;
+        }
+
+        .logo-texto {
+            color: var(--cor-texto-claro);
+            font-size: 1.35rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .logo-texto span {
+            color: var(--cor-dourado-nobre);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: var(--cor-texto-claro);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 0.5rem 0;
+            position: relative;
+            transition: var(--transicao-padrao);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--cor-dourado-nobre);
+            transition: var(--transicao-padrao);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.ativo::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.ativo {
+            color: var(--cor-dourado-nobre);
+        }
+
+        /* --- ESTRUTURA SPA --- */
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .view-spa {
+            display: none;
+            opacity: 0;
+            animation: entradaSuave 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+
+        .view-spa.ativa {
+            display: block;
+        }
+
+        @keyframes entradaSuave {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- SEÇÕES DE CONTEÚDO --- */
+        .hero-section {
+            background-color: var(--cor-primaria);
+            background-image: linear-gradient(135deg, var(--cor-base-escura) 0%, var(--cor-primaria) 100%);
+            color: var(--cor-texto-claro);
+            padding: 120px 0;
+            text-align: center;
+            border-bottom: 5px solid var(--cor-dourado-nobre);
+        }
+
+        .hero-conteudo {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .hero-secao-titulo {
+            font-size: 3.5rem;
+            color: var(--cor-texto-claro);
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .hero-secao-titulo span {
+            color: var(--cor-dourado-nobre);
+        }
+
+        .hero-secao-texto {
+            font-size: 1.25rem;
+            color: #d1d5db;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .hero-botoes {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .secao-conteudo {
+            padding: var(--espacamento-g) 0;
+            background-color: var(--cor-fundo-secao);
+        }
+
+        .secao-conteudo-alt {
+            background-color: var(--cor-fundo-claro);
+        }
+
+        .grid-2-colunas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .texto-bloco h2 {
+            font-size: 2.25rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .texto-bloco h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background-color: var(--cor-dourado-nobre);
+        }
+
+        .texto-bloco p {
+            font-size: 1.125rem;
+            color: var(--cor-texto-secundario);
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        .card-destaque {
+            background-color: var(--cor-base-escura);
+            padding: 3.5rem;
+            border-radius: 4px;
+            color: var(--cor-texto-claro);
+            box-shadow: var(--sombra-profunda);
+            border-top: 5px solid var(--cor-dourado-nobre);
+        }
+
+        .card-destaque h3 {
+            color: var(--cor-dourado-nobre);
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .card-destaque p {
+            color: #d1d5db;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        /* --- RODAPÉ --- */
+        .footer-principal {
+            background-color: var(--cor-base-escura);
+            color: var(--cor-texto-claro);
+            padding: 4rem 0 2rem 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 3rem;
+        }
+
+        .footer-info h4 {
+            color: var(--cor-dourado-nobre);
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-info p {
+            color: #9ca3af;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        /* --- RESPONSIVIDADE COMPLETA --- */
+        @media (max-width: 900px) {
+            .grid-2-colunas {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                height: auto;
+                padding: 1.5rem 0;
+                gap: 1.5rem;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1.5rem;
+            }
+            .hero-secao-titulo { font-size: 2.25rem; }
+            .hero-botoes { flex-direction: column; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO INSTITUCIONAL -->
+    <header class="header-principal">
+        <div class="container header-container">
+            <div class="logo-texto">Batalha no <span>Céu</span></div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#inicio" class="link-nav ativo" data-target="inicio">Início</a></li>
+                    <li><a href="#hesed" class="link-nav" data-target="hesed">Instituto Hesed</a></li>
+                    <li><a href="#exercito" class="link-nav" data-target="exercito">Exército de São Miguel</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MOTOR DO SINGLE PAGE APPLICATION -->
+    <main>
+        <!-- ROTA: INÍCIO -->
+        <section id="view-inicio" class="view-spa ativa">
+            <div class="hero-section">
+                <div class="container hero-conteudo">
+                    <h1 class="hero-secao-titulo">A Ponte para a <span>Central Hesedita</span></h1>
+                    <p class="hero-secao-texto">Preparando, instruindo e guiando corações para a profunda espiritualidade e o rigor do combate espiritual promovido pelo Instituto Hesed.</p>
+                    <div class="hero-botoes">
+                        <a href="#exercito" class="btn btn-dourado">Conhecer o Exército</a>
+                        <a href="#hesed" class="btn btn-contorno">Nossa Diretriz</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="secao-conteudo">
+                <div class="container grid-2-colunas">
+                    <div class="texto-bloco">
+                        <h2>Estrutura Sólida e Formal</h2>
+                        <p>O Grupo Batalha no Céu atua com a máxima seriedade na evangelização e no recrutamento no ambiente digital. Nós somos a linha de frente, a ponte tática que liga os desconhecidos à vida de oração e adoração incessante.</p>
+                        <p>Através do domínio batalhanoceu.org, estabelecemos uma base inabalável para que cada novo soldado compreenda a gravidade, a ordem e a magnitude deste chamado antes de integrar oficialmente as fileiras do Instituto.</p>
+                    </div>
+                    <div class="card-destaque">
+                        <h3>O Chamado às Armas</h3>
+                        <p>Não se trata de um simples agrupamento, mas de uma convocação divina. Exigimos disciplina, reverência absoluta e submissão aos preceitos estabelecidos pelas diretrizes da Central Hesedita.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROTA: INSTITUTO HESED -->
+        <section id="view-hesed" class="view-spa">
+            <div class="secao-conteudo">
+                <div class="container grid-2-colunas">
+                    <div class="card-destaque">
+                        <h3>Carisma e Vocação</h3>
+                        <p>Uma vida integralmente enraizada na adoração diária ao Santíssimo Sacramento e na devoção filial à Virgem Maria. Um verdadeiro baluarte de intercessão e resgate pelo Brasil.</p>
+                    </div>
+                    <div class="texto-bloco">
+                        <h2>Instituto Hesed</h2>
+                        <p>Fundado sob a rigorosa inspiração do carisma da misericórdia, o Instituto Hesed representa a vanguarda da oração contemplativa e do combate espiritual no país. Através de uma vida reclusa e dedicada, o Instituto tem sido o instrumento definitivo de salvação para milhares de almas.</p>
+                        <p>O Grupo Batalha no Céu opera em estrita obediência e comunhão com os formadores do Instituto, servindo como uma extensão oficial de seu braço evangelizador.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROTA: EXÉRCITO DE SÃO MIGUEL -->
+        <section id="view-exercito" class="view-spa">
+            <div class="secao-conteudo secao-conteudo-alt">
+                <div class="container">
+                    <div class="texto-bloco" style="max-width: 900px; margin: 0 auto; text-align: center;">
+                        <h2 style="display: inline-block;">Exército de São Miguel</h2>
+                        <p style="text-align: center; margin-top: 2rem;">Sob o comando e intercessão direta do Príncipe da Milícia Celeste, o Exército congrega fiéis rigorosamente dispostos a empunhar as armas da fé: a oração incessante, o jejum penitencial e a profunda vivência sacramental.</p>
+                        <p style="text-align: center;">Esta plataforma tem o dever de centralizar as instruções magnas e o direcionamento estratégico para que os novos soldados se alistem e compreendam o peso, a responsabilidade e a glória imortal de pertencer a esta milícia liderada pelo Instituto Hesed.</p>
+                        <div style="margin-top: 3rem;">
+                            <a href="#inicio" class="btn btn-dourado">Retornar à Base</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- RODAPÉ INSTITUCIONAL -->
+    <footer class="footer-principal">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-info">
+                    <h4>Grupo Batalha no Céu</h4>
+                    <p>A ponte oficial e central de instrução para a Central Hesedita e o Exército de São Miguel.</p>
+                </div>
+                <div class="footer-info" style="text-align: right;">
+                    <h4>Contato e Administração</h4>
+                    <p>Comunicação Oficial: <strong>@batalhanoceu.oficial</strong></p>
+                    <p>Domínio Operacional: <strong>batalhanoceu.org</strong></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Grupo Batalha no Céu. Todos os direitos reservados. Projeto Central Hesedita.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT: ROTEADOR SPA BASEADO EM HASH -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const linksNav = document.querySelectorAll('.link-nav');
+            const views = document.querySelectorAll('.view-spa');
+
+            function gerenciarRotas() {
+                // Captura o hash atual (ex: #hesed). Se vazio, direciona para 'inicio'
+                let hash = window.location.hash.substring(1) || 'inicio';
+                
+                // Validação estrita de rotas permitidas
+                const rotasValidas = ['inicio', 'hesed', 'exercito'];
+                if (!rotasValidas.includes(hash)) hash = 'inicio';
+
+                // Oculta todas as seções
+                views.forEach(view => view.classList.remove('ativa'));
+                linksNav.forEach(link => link.classList.remove('ativo'));
+
+                // Exibe a seção e ativa o link correspondente
+                const viewAtiva = document.getElementById(`view-${hash}`);
+                if (viewAtiva) {
+                    viewAtiva.classList.add('ativa');
+                    // Reinicia a animação CSS para garantir fluidez na transição
+                    viewAtiva.style.animation = 'none';
+                    viewAtiva.offsetHeight; 
+                    viewAtiva.style.animation = null;
+                }
+
+                const linkAtivo = document.querySelector(`.link-nav[data-target="${hash}"]`);
+                if (linkAtivo) {
+                    linkAtivo.classList.add('ativo');
+                }
+                
+                // Retorna a rolagem para o topo da página suavemente
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Escuta alterações na URL (Navegação natural do usuário)
+            window.addEventListener('hashchange', gerenciarRotas);
+
+            // Inicializa a rota ao carregar a página
+            gerenciarRotas();
+        });
+    </script>
+</body>
+</html>
